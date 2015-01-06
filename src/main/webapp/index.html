@@ -83,12 +83,12 @@
             function onMessageReceived(evt) {
                 var msg = JSON.parse(evt.data); // native API
                 var $messageLine = $('<tr><td class="received">' + msg.received
-                        + '</td><td class="user label label-info">' + msg.sender
-                        + '</td><td class="message badge">' + msg.message
+                        + '</td><td class="user label label-name">' + msg.sender + ':'
+                        + '</td><td class="message badge badge-white">' + msg.message
                         + '</td></tr>');
                 $chatWindow.append($messageLine);
             }
-            
+
             function sendMessage() {
                 if (!isNullOrWhitespace($message.val())) {
                     var msg = '{"message":"' + $message.val() + '", "sender":"'
@@ -105,6 +105,9 @@
             }
 
             function leaveRoom() {
+                var msg = '{"message":"' + 'saiu do canal' + '", "sender":"'
+                        + $nickName.val() + '", "received":""}';
+                wsocket.send(msg);
                 wsocket.close();
                 $chatWindow.empty();
                 $('.chat-wrapper').hide();
@@ -126,8 +129,14 @@
                     $('.chat-signin').hide();
                     $('.chat-wrapper').show();
                     $message.focus();
+
+//                    var msg = '{"message":"' + 'entrou no canal' + '", "sender":"'
+//                            + $nickName.val() + '", "received":""}';
+//                    console.log(msg);
+//                    console.log(wsocket);
+//                    wsocket.send(msg);
                 });
-                
+
                 $('#do-chat').submit(function (evt) {
                     evt.preventDefault();
                     sendMessage();
@@ -141,7 +150,7 @@
             function isNullOrWhitespace(input) {
                 if (typeof input === 'undefined' || input === null)
                     return true;
-                
+
                 return input.replace(/\s/g, '').length < 1;
             }
         </script>
@@ -163,7 +172,6 @@
                     </select>
                 </div>
                 <button class="btn btn-large btn-primary" type="submit" id="enterRoom">Entrar</button>
-                <button class="btn btn-large " type="submit" id="alert-test">Alert</button>
             </form>
         </div>
         <!-- /container -->
