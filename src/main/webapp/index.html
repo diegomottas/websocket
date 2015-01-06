@@ -88,10 +88,13 @@
                         + '</td></tr>');
                 $chatWindow.append($messageLine);
             }
+            
             function sendMessage() {
-                var msg = '{"message":"' + $message.val() + '", "sender":"'
-                        + $nickName.val() + '", "received":""}';
-                wsocket.send(msg);
+                if (!isNullOrWhitespace($message.val())) {
+                    var msg = '{"message":"' + $message.val() + '", "sender":"'
+                            + $nickName.val() + '", "received":""}';
+                    wsocket.send(msg);
+                }
                 $message.val('').focus();
             }
 
@@ -124,15 +127,23 @@
                     $('.chat-wrapper').show();
                     $message.focus();
                 });
+                
                 $('#do-chat').submit(function (evt) {
                     evt.preventDefault();
-                    sendMessage()
+                    sendMessage();
                 });
 
                 $('#leave-room').click(function () {
                     leaveRoom();
                 });
             });
+
+            function isNullOrWhitespace(input) {
+                if (typeof input === 'undefined' || input === null)
+                    return true;
+                
+                return input.replace(/\s/g, '').length < 1;
+            }
         </script>
     </head>
 
@@ -141,8 +152,7 @@
         <div class="container chat-signin">
             <form class="form-signin">
                 <h2 class="form-signin-heading">Chat log in</h2>
-                <label for="nickname">Apelido</label> <input type="text"
-                                                             class="input-block-level" placeholder="Apelido" id="nickname">
+                <label for="nickname">Apelido</label> <input type="text" class="input-block-level" placeholder="Apelido" id="nickname">
                 <div class="btn-group">
                     <label for="chatroom">Canal</label> <select size="1"
                                                                 id="chatroom">
@@ -152,8 +162,8 @@
                         <option>Canal 4</option>
                     </select>
                 </div>
-                <button class="btn btn-large btn-primary" type="submit"
-                        id="enterRoom">Entrar</button>
+                <button class="btn btn-large btn-primary" type="submit" id="enterRoom">Entrar</button>
+                <button class="btn btn-large " type="submit" id="alert-test">Alert</button>
             </form>
         </div>
         <!-- /container -->
@@ -166,8 +176,7 @@
                     <legend>Digite a sua mensagem...</legend>
                     <div class="controls">
                         <input type="text" class="input-block-level" placeholder="Escreva aqui..." id="message" style="height:60px"/>
-                        <input type="submit" class="btn btn-large btn-block btn-primary"
-                               value="Enviar mensagem" />
+                        <input type="submit" class="btn btn-large btn-block btn-primary" value="Enviar mensagem" />
                         <button class="btn btn-large btn-block" type="button" id="leave-room">Sair do canal</button>
                     </div>
                 </fieldset>
